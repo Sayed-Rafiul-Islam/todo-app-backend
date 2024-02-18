@@ -8,7 +8,7 @@ const createJwt = async (user) => {
 };
 
 const verifyJwt = async (token) => {
-  const user = jwt.verify(token, process.env.ACCESS_TOKEN);
+  const user = jwt.verify(token, process.env.ACCESS_TOKEN)
   return user;
 };
 

@@ -61,12 +61,12 @@ const login = async (req,res) => {
 // Create new Admin
 
 
-const createUser = async (req,res) => {
+const signupUser = async (req,res) => {
     try {
-        const {name,email,password} = req.body;
+        const {name,email,password,role} = req.body;
 
         const currentDate = new Date()
-        const data = {userName : name, email, role : "user", date : currentDate}
+        const data = {userName : name, email, role, date : currentDate}
         const token = await createJwt(data)
         const pass_word = await encode(password)
 
@@ -82,10 +82,53 @@ const createUser = async (req,res) => {
                 userName : name,
                 email,
                 pass_word,
-                role : "user"
+                role
             })
-            res.status(200).send({accessToken : token, email, role : "user"})
+            res.status(200).send({accessToken : token, email, role})
         }         
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).send(error)
+        }
+}
+const updateRole = async (req,res) => {
+    try {
+        const {role,_id} = req.body;
+        const filter = {_id}
+        const data = {role}
+        await User.updateOne(filter,data,{new : true})
+        const updatedUser = await User.findOne(filter)
+        res.status(200).send(updatedUser)
+        } catch (error) {
+            console.log(error)
+            res.status(500).send(error)
+        }
+}
+const createUser = async (req,res) => {
+    try {
+        const {name,email,password,role} = req.body;
+        const pass_word = await encode(password)
+
+        const newUser = await User.create({
+            userName : name,
+            email,
+            pass_word,
+            role
+        })
+        res.status(200).send(newUser)
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).send(error)
+        }
+}
+const removeUser = async (req,res) => {
+    try {
+        const {_id} = req.query;
+        const deletedUser = await User.find({_id})
+        await User.deleteOne({_id})
+        res.status(200).send(deletedUser[0])
 
         } catch (error) {
             console.log(error)
@@ -99,4 +142,7 @@ module.exports = {
     getUsers,
     createUser,
     login,
+    signupUser,
+    removeUser,
+    updateRole
 }

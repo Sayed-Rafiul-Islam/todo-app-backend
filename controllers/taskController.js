@@ -5,8 +5,8 @@ const Task = require('../models/taskModel')
 const createTask = async (req,res) => {
     try {
         const data = req.body
-        await Task.create(data)
-        res.status(200).send()
+        const newTask = await Task.create(data)
+        res.status(200).send(newTask)
     } catch (error) {
         res.status(500).send(error)
     }
@@ -26,10 +26,12 @@ const updateTask = async (req,res) => {
 
 const updateMyTask = async (req,res) => {
     try {
-        const data = req.body
-        const filter = { _id : data.id}
-        await Task.updateOne(filter,{status : data.status},{new : true})
-        res.status(200).send()
+        const {_id,status} = req.body
+        const filter = {_id}
+        const data = {status}
+        await Task.updateOne(filter,data,{new : true})
+        const updatedTask = await Task.findOne(filter)
+        res.status(200).send(updatedTask)
     } catch (error) {
         res.status(500).send(error)
     }

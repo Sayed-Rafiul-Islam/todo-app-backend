@@ -10,6 +10,7 @@ const userAuthViaToken = async (req, res, next) => {
 
   try {
     const user = await verifyJwt(accessToken)
+
     if (!user) {
       res.status(403).send({message : "Unauthorized Access"});
     } 
@@ -18,7 +19,7 @@ const userAuthViaToken = async (req, res, next) => {
     
   } catch (error) {
     console.log(error)
-    res.status(500).send(error);
+    res.status(500).json({message : "expired"});
   }
 };
 
