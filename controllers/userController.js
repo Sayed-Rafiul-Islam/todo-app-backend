@@ -4,19 +4,6 @@ const { encode } = require('../utils/cypher')
 const bcrypt = require('bcrypt');
 
 
-// const getUsers = async (req,res) => {  
-//     const id = req.params
-//     console.log(id)
-//     // try {
-//     //     const users = await User.find({})
-//     //     res.status(200).send(users)
-//     // } catch (error) {
-//     //     res.status(500).send(error)
-//     // }
-// }
-
-
-
 const getUsers = async (req,res) => {  
     try {
         const users = await User.find()
