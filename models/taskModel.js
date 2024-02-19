@@ -26,6 +26,13 @@ const taskSchema = new Schema({
     assignedTo : {
         type : String,
         required : true
+    },
+    comment : {
+        type : String,
+    },
+    assignedDate : {
+        type : Date,
+        required : true
     }
 })
 

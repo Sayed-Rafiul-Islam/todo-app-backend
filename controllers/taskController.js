@@ -5,7 +5,8 @@ const Task = require('../models/taskModel')
 const createTask = async (req,res) => {
     try {
         const data = req.body
-        const newTask = await Task.create(data)
+        const task = {...data, assignedDate : new Date()}
+        const newTask = await Task.create(task)
         res.status(200).send(newTask)
     } catch (error) {
         res.status(500).send(error)
@@ -26,9 +27,9 @@ const updateTask = async (req,res) => {
 
 const updateMyTask = async (req,res) => {
     try {
-        const {_id,status} = req.body
+        const {_id,status,comment} = req.body
         const filter = {_id}
-        const data = {status}
+        const data = {status,comment}
         await Task.updateOne(filter,data,{new : true})
         const updatedTask = await Task.findOne(filter)
         res.status(200).send(updatedTask)
@@ -55,7 +56,7 @@ const getTaskById = async (req,res) => {
 const getAssignedTasks = async (req,res) => {  
     try {
         const {email} = req.query
-        const tasks = await Task.find({assignedBy : email})
+        const tasks = await Task.find({assignedBy : email}).sort({ assignedDate : -1})
         res.status(200).json(tasks)
     } catch (error) {
         res.status(500).send(error)
@@ -65,8 +66,7 @@ const getAssignedTasks = async (req,res) => {
 const getMyTasks = async (req,res) => {  
     try {
         const {email} = req.query
-        const tasks = await Task.find({assignedTo : email})
-        console.log(tasks)
+        const tasks = await Task.find({assignedTo : email}).sort({ assignedDate : -1})
         res.status(200).json(tasks)
     } catch (error) {
         res.status(500).send(error)
